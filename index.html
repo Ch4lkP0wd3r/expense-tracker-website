@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHAIRYA SINGH DHAILA | CS PROJECT XII</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@100;400;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --acid: #10b981; 
+            --warning: #ff3e3e; 
+            --dark-bg: #050505;
+        }
+        
+        /* Smooth scrolling for the whole page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body { 
+            background-color: var(--dark-bg); 
+            color: #e5e5e5; 
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .mono { font-family: 'Space Mono', monospace; }
+        
+        /* Grid Overlay Background */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(16, 185, 129, 0.03), rgba(16, 185, 129, 0.03));
+            z-index: 100;
+            background-size: 100% 4px, 50px 100%;
+            pointer-events: none;
+        }
+
+        .cyber-border {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            background: rgba(255,255,255,0.02);
+            transition: all 0.3s ease;
+        }
+        .cyber-border::after {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px; width: 10px; height: 10px;
+            border-top: 2px solid var(--acid); border-left: 2px solid var(--acid);
+        }
+        .cyber-border:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Mouse Reticle */
+        #reticle {
+            position: fixed;
+            width: 40px; height: 40px;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 200;
+            transform: translate(-50%, -50%);
+            display: flex; align-items: center; justify-content: center;
+            transition: width 0.2s, height 0.2s;
+        }
+        #reticle::after { content: ''; width: 4px; height: 4px; background: var(--acid); border-radius: 50%; }
+
+        .glitch-text:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+            color: var(--acid);
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .progress-bar {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--acid);
+            box-shadow: 0 0 10px var(--acid);
+        }
+
+        .nav-link { position: relative; padding-bottom: 4px; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+            background: var(--acid); transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: var(--acid); }
+
+        /* Terminal Window */
+        .terminal {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            font-family: 'Space Mono', monospace;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .prompt { color: var(--acid); }
+        .cmd { color: #fff; }
+    </style>
+</head>
+<body class="selection:bg-emerald-500 selection:text-black">
+
+    <div id="reticle" class="hidden md:flex"></div>
+
+    <nav class="fixed w-full z-[150] p-6 flex justify-between items-center bg-black/90 backdrop-blur-md border-b border-white/10">
+        <div class="flex items-center space-x-3">
+            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span class="mono text-[10px] tracking-[0.3em] uppercase text-emerald-500">DHAIRYA // XII-A // ST. XAVIERS</span>
+        </div>
+        <div class="mono text-[10px] tracking-[0.3em] space-x-8 uppercase hidden md:flex">
+            <a href="#intro" class="nav-link transition">Access</a>
+            <a href="#about" class="nav-link transition">Identity</a>
+            <a href="#stack" class="nav-link transition">Stack</a>
+            <a href="#project" class="nav-link transition">System</a>
+            <a href="https://github.com/Ch4lkP0wd3r/expense-tracker-pro" target="_blank" class="nav-link transition text-emerald-500">Repo_Link</a>
+        </div>
+    </nav>
+
+    <section id="intro" class="min-h-screen flex flex-col justify-center px-10 md:px-32 relative bg-gradient-to-b from-black to-zinc-950 pt-20">
+        <div class="absolute top-1/3 right-10 opacity-10 hidden md:block text-right">
+            <pre class="mono text-[10px] text-emerald-500">
+                IMPORT PANDAS AS PD
+                IMPORT MATPLOTLIB.PYPLOT
+                CLASS EXPENSETRACKER:
+                DEF __INIT__(SELF):
+                SELF.DATA_DIR = PATH('DATA')
+            </pre>
+        </div>
+
+        <h2 class="mono text-emerald-500 text-sm mb-4 tracking-widest decrypt-text">[CBSE_BOARD_PRACTICAL_2025]</h2>
+        <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-white mb-6 uppercase">
+            FINANCIAL <br> <span class="glitch-text italic text-zinc-700">TRACKER PRO.</span>
+        </h1>
+        
+        <p class="max-w-2xl text-xl font-light text-zinc-500 leading-relaxed mb-12">
+            An advanced Python-based system for tracking, analyzing, and visualizing personal financial data with enterprise-grade persistence.
+        </p>
+
+        <div class="flex gap-4">
+            <a href="https://github.com/Ch4lkP0wd3r/expense-tracker-pro" target="_blank" class="px-8 py-3 bg-emerald-500 text-black font-bold uppercase tracking-wider hover:bg-emerald-400 transition mono text-sm flex items-center gap-2">
+                <i data-lucide="github" class="w-4 h-4"></i> Source Code
+            </a>
+            <a href="#about" class="px-8 py-3 border border-emerald-500 text-emerald-500 font-bold uppercase tracking-wider hover:bg-emerald-500 hover:text-black transition mono text-sm">
+                Developer Info
+            </a>
+        </div>
+    </section>
+
+    <section id="about" class="px-10 md:px-32 py-20 bg-zinc-900/50">
+        <h3 class="mono text-emerald-500 text-xs mb-12 tracking-[0.5em] uppercase">// PROJECT_METADATA</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
+            <div class="p-12 bg-black hover:bg-zinc-900 transition-colors group">
+                <div class="flex justify-between items-start mb-6">
+                    <i data-lucide="user" class="text-emerald-500"></i>
+                    <span class="mono text-[8px] text-emerald-500/50">DEV_ID: 001</span>
+                </div>
+                <h4 class="text-xl font-bold mb-2 uppercase text-white">Dhairya Singh Dhaila</h4>
+                <p class="mono text-xs text-zinc-500">CLASS XII - A</p>
+                <p class="mono text-xs text-zinc-500 mt-1">St. Xavier's High School</p>
+            </div>
+
+            <div class="p-12 bg-black hover:bg-zinc-900 transition-colors group">
+                <div class="flex justify-between items-start mb-6">
+                    <i data-lucide="graduation-cap" class="text-emerald-500"></i>
+                    <span class="mono text-[8px] text-emerald-500/50">SUPERVISOR</span>
+                </div>
+                <h4 class="text-xl font-bold mb-2 uppercase text-white">Ms. Mehwish Khan</h4>
+                <p class="mono text-xs text-zinc-500">Computer Science / IP Faculty</p>
+                <p class="mono text-xs text-zinc-500 mt-1">Project Guide</p>
+            </div>
+
+            <div class="p-12 bg-black hover:bg-zinc-900 transition-colors group">
+                <div class="flex justify-between items-start mb-6">
+                    <i data-lucide="code-2" class="text-emerald-500"></i>
+                    <span class="mono text-[8px] text-emerald-500/50">DOMAIN</span>
+                </div>
+                <h4 class="text-xl font-bold mb-2 uppercase text-white">Informatics Prac.</h4>
+                <p class="mono text-xs text-zinc-500">Code: 065</p>
+                <p class="mono text-xs text-zinc-500 mt-1">Session 2024-25</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="stack" class="px-10 md:px-32 py-32">
+        <h3 class="mono text-emerald-500 text-xs mb-12 tracking-[0.5em] uppercase">// TECHNOLOGY_RESOURCES</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div class="cyber-border p-6 hover:bg-white/5 transition">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="table" class="text-emerald-500 w-5 h-5"></i>
+                    <h4 class="font-bold text-white uppercase tracking-tighter">Pandas</h4>
+                </div>
+                <p class="text-xs text-zinc-500 mono leading-relaxed">Handling complex DataFrames, CSV manipulation, and analytical sorting.</p>
+            </div>
+            <div class="cyber-border p-6 hover:bg-white/5 transition">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="pie-chart" class="text-emerald-500 w-5 h-5"></i>
+                    <h4 class="font-bold text-white uppercase tracking-tighter">Matplotlib</h4>
+                </div>
+                <p class="text-xs text-zinc-500 mono leading-relaxed">Rendering graphical representations of spending habits and category trends.</p>
+            </div>
+            <div class="cyber-border p-6 hover:bg-white/5 transition">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="folder-tree" class="text-emerald-500 w-5 h-5"></i>
+                    <h4 class="font-bold text-white uppercase tracking-tighter">Pathlib</h4>
+                </div>
+                <p class="text-xs text-zinc-500 mono leading-relaxed">Managing cross-platform file paths for robust data storage integrity.</p>
+            </div>
+            <div class="cyber-border p-6 hover:bg-white/5 transition">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="box" class="text-emerald-500 w-5 h-5"></i>
+                    <h4 class="font-bold text-white uppercase tracking-tighter">JSON/OS</h4>
+                </div>
+                <p class="text-xs text-zinc-500 mono leading-relaxed">Leveraging config files and automated system backups via <code>shutil</code>.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="cyber-border p-8">
+                <h4 class="text-2xl font-bold mb-8 uppercase tracking-tight text-white flex items-center">
+                    <i data-lucide="cpu" class="mr-3 text-emerald-500"></i>
+                    Core Architecture
+                </h4>
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="mono text-xs text-zinc-400">Python 3.8+</span>
+                            <span class="mono text-xs text-emerald-500">Logic Core</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="mono text-xs text-zinc-400">Pandas (Dataframes)</span>
+                            <span class="mono text-xs text-emerald-500">Data Processing</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 90%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="mono text-xs text-zinc-400">Matplotlib</span>
+                            <span class="mono text-xs text-emerald-500">Visualization</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cyber-border p-8">
+                <h4 class="text-2xl font-bold mb-8 uppercase tracking-tight text-white flex items-center">
+                    <i data-lucide="shield-check" class="mr-3 text-emerald-500"></i>
+                    System Capabilities
+                </h4>
+                <div class="grid grid-cols-2 gap-4 mono text-xs">
+                    <div class="flex items-center space-x-2 text-zinc-400">
+                        <span class="text-emerald-500">▸</span>
+                        <span>CSV Persistence</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-zinc-400">
+                        <span class="text-emerald-500">▸</span>
+                        <span>Automated Backups</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-zinc-400">
+                        <span class="text-emerald-500">▸</span>
+                        <span>Input Validation</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-zinc-400">
+                        <span class="text-emerald-500">▸</span>
+                        <span>Budget Warning Systems</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-zinc-400">
+                        <span class="text-emerald-500">▸</span>
+                        <span>Excel Export</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-zinc-400">
+                        <span class="text-emerald-500">▸</span>
+                        <span>Trend Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="project" class="px-10 md:px-32 py-32 bg-zinc-900/30">
+        <h3 class="mono text-emerald-500 text-xs mb-12 tracking-[0.5em] uppercase">// SYSTEM_INTERFACE</h3>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div class="space-y-6">
+                <div class="cyber-border p-6 group cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-white font-bold uppercase">Data Visualization Module</h4>
+                        <i data-lucide="bar-chart-2" class="text-emerald-500 group-hover:scale-110 transition"></i>
+                    </div>
+                    <p class="text-zinc-500 text-sm">Generates four distinct chart types (Bar, Pie, Line) to visually represent spending habits and category distribution using Matplotlib.</p>
+                </div>
+                <div class="cyber-border p-6 group cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-white font-bold uppercase">Redundancy & Backups</h4>
+                        <i data-lucide="save" class="text-emerald-500 group-hover:scale-110 transition"></i>
+                    </div>
+                    <p class="text-zinc-500 text-sm">Automated <code>shutil</code> routine creates timestamped backups of financial data on every launch, ensuring zero data loss.</p>
+                </div>
+                <div class="cyber-border p-6 group cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-white font-bold uppercase">Report Generation</h4>
+                        <i data-lucide="file-text" class="text-emerald-500 group-hover:scale-110 transition"></i>
+                    </div>
+                    <p class="text-zinc-500 text-sm">Exports comprehensive financial summaries to universal formats: <code>.csv</code>, <code>.json</code>, and <code>.xlsx</code>.</p>
+                </div>
+            </div>
+
+            <div class="terminal h-full flex flex-col">
+                <div class="flex gap-2 mb-4 border-b border-zinc-800 pb-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-2 text-xs text-zinc-500 mono">dhairya@kali:~/financial-tracker-pro</span>
+                </div>
+                <div class="text-xs md:text-sm overflow-y-auto font-mono leading-relaxed opacity-80">
+                    <p><span class="prompt">➜</span> <span class="cmd">python3 main.py</span></p>
+                    <p class="text-emerald-500 my-2">
+                        ============================================================<br>
+                        💸 Welcome to Financial Tracker Pro - Professional Edition<br>
+                        ============================================================
+                    </p>
+                    <p class="text-white">
+                        [SYSTEM] Directories initialized... OK<br>
+                        [SYSTEM] Data loaded successfully (45 records)<br>
+                        [BACKUP] backup_20250106_1430.csv created.<br>
+                        <br>
+                        MAIN MENU<br>
+                        1️⃣   Add New Expense<br>
+                        2️⃣   View Expenses<br>
+                        3️⃣   Visualize Data <span class="text-zinc-500">&lt;-- SELECTED</span><br>
+                        4️⃣   Export Data<br>
+                        5️⃣   Exit<br>
+                        <br>
+                        Enter your choice (1-5): <span class="text-emerald-500 animate-pulse">_</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="p-16 text-center border-t border-white/10 bg-black relative">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <div class="space-y-2">
+                <h2 class="text-white font-black text-2xl uppercase tracking-tighter">Created by Dhairya Singh Dhaila</h2>
+                <p class="mono text-emerald-500 text-xs uppercase tracking-[0.2em]">Class XII-A | St Xavier's High School</p>
+            </div>
+
+            <div class="py-6 border-y border-white/5">
+                <p class="text-zinc-400 text-sm">
+                    Under the guidance of <span class="text-white font-bold">Ms Mehwish Khan</span> 
+                    <span class="mx-2 text-zinc-700">|</span> 
+                    Informatics Practices
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest">
+                    CBSE Board Practical Project 2024-2025 | Made with ❤️ and Python
+                </p>
+                
+                <div class="flex justify-center gap-6 pt-4">
+                    <a href="https://github.com/Ch4lkP0wd3r/expense-tracker-pro" target="_blank" class="text-zinc-600 hover:text-emerald-500 transition"><i data-lucide="github"></i></a>
+                    <a href="https://github.com/Ch4lkP0wd3r/expense-tracker-pro" target="_blank" class="text-zinc-600 hover:text-emerald-500 transition"><i data-lucide="external-link"></i></a>
+                </div>
+
+                <p class="text-[9px] text-zinc-800 mono mt-8 uppercase tracking-widest">
+                    © 2025 All Rights Reserved
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Mouse Reticle
+        const reticle = document.getElementById('reticle');
+        document.addEventListener('mousemove', (e) => {
+            setTimeout(() => {
+                reticle.style.left = e.clientX + 'px';
+                reticle.style.top = e.clientY + 'px';
+            }, 50);
+        });
+
+        document.addEventListener('mousedown', () => {
+            reticle.style.width = '30px';
+            reticle.style.height = '30px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            reticle.style.width = '40px';
+            reticle.style.height = '40px';
+        });
+
+        // GSAP Animations
+        gsap.from("h1, h2, p", {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+
+        // Decrypt Text Effect
+        const decryptElements = document.querySelectorAll('.decrypt-text');
+        decryptElements.forEach(el => {
+            const original = el.innerText;
+            const chars = "ABCDEF0123456789";
+            let iterations = 0;
+            const interval = setInterval(() => {
+                el.innerText = original.split("").map((char, index) => {
+                    if(index < iterations) return original[index];
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join("");
+                if(iterations >= original.length) clearInterval(interval);
+                iterations += 1/3;
+            }, 30);
+        });
+    </script>
+</body>
+</html>
